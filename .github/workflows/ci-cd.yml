@@ -41,11 +41,11 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT }}
           script: |
-            # Create app directory if not exists
+            # Create app directory
             mkdir -p /opt/${{ env.APP_NAME }}
             cd /opt/${{ env.APP_NAME }}
             
-            # Create .env file from secrets
+            # Create .env file
             cat > .env << EOF
             DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
             PG_DB_USERNAME=${{ secrets.PG_DB_USERNAME }}
@@ -53,70 +53,54 @@ jobs:
             PG_DB_NAME=${{ secrets.PG_DB_NAME }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}
+            JWT_ACCESS_EXPIRATION_MINUTES=${{ secrets.JWT_ACCESS_EXPIRATION_MINUTES }}
+            JWT_REFRESH_EXPIRATION_DAYS=${{ secrets.JWT_REFRESH_EXPIRATION_DAYS }}
             VPS_PORT=3000
             EOF
             
-            # Download/Overwrite docker-compose.prod.yml
-            # NOTE: In a real scenario, you might want to copy this file from the repo or have it on the server
-            # Here we will create it on the fly using echo for simplicity as requested "lean"
-            # BUT better to use SCP or fetch from git. Let's fetch from raw git if public or just echo it.
-            # Assuming the repo is private, scp is better. Since I cannot scp easily in this script block without checkout action on runner...
-            # I will write the content of docker-compose.prod.yml here directly into the script for maximum standalone capability.
+      - name: Copy docker-compose to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          source: "docker-compose.prod.yml"
+          target: "/opt/${{ env.APP_NAME }}"
+          
+      - name: Start containers and run migrations
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          script: |
+            cd /opt/${{ env.APP_NAME }}
             
-            cat > docker-compose.prod.yml << 'DOCKERCOMPOSE'
-            services:
-              app:
-                image: \${DOCKER_USERNAME}/flow-task:latest
-                container_name: flow-task-app
-                restart: always
-                ports:
-                  - "\${VPS_PORT:-3000}:3000"
-                environment:
-                  - DATABASE_URL=postgresql://\${PG_DB_USERNAME}:\${PG_DB_PASSWORD}@postgres:5432/\${PG_DB_NAME}?schema=public
-                  - JWT_SECRET=\${JWT_SECRET}
-                  - JWT_REFRESH_SECRET=\${JWT_REFRESH_SECRET}
-                  - PORT=3000
-                depends_on:
-                  postgres:
-                    condition: service_healthy
-
-              postgres:
-                image: postgres:15-alpine
-                container_name: flow-task-db
-                restart: always
-                environment:
-                  POSTGRES_USER: \${PG_DB_USERNAME}
-                  POSTGRES_PASSWORD: \${PG_DB_PASSWORD}
-                  POSTGRES_DB: \${PG_DB_NAME}
-                ports:
-                  - "5432:5432"
-                volumes:
-                  - postgres_data:/var/lib/postgresql/data
-                healthcheck:
-                  test: ["CMD-SHELL", "pg_isready -U \${PG_DB_USERNAME} -d \${PG_DB_NAME}"]
-                  interval: 10s
-                  timeout: 5s
-                  retries: 5
-
-            volumes:
-              postgres_data:
-            DOCKERCOMPOSE
-            
-            # Pull latest code/images
+            # Pull latest images
             docker compose -f docker-compose.prod.yml pull
             
-            # Stop and remove old containers
+            # Stop old containers
             docker compose -f docker-compose.prod.yml down
             
             # Start new containers
             docker compose -f docker-compose.prod.yml up -d
             
-            # Run migrations and Seed inside the app container
+            # Wait for app to be ready
+            sleep 10
+            
+            # Generate Prisma Client
+            echo "Generating Prisma Client..."
+            docker exec flow-task-app npx prisma generate
+            
+            # Run migrations
             echo "Running migrations..."
             docker exec flow-task-app npx prisma migrate deploy
             
+            # Seed database (opcional)
             echo "Running seeds..."
-            docker exec flow-task-app npx prisma db seed
+            docker exec flow-task-app npx prisma db seed || echo "Seed failed or not configured"
             
-            # Clean up
+            # Clean up unused images
             docker image prune -f
