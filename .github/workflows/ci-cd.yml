@@ -94,6 +94,8 @@ jobs:
             JWT_REFRESH_EXPIRATION_DAYS=${{ secrets.JWT_REFRESH_EXPIRATION_DAYS }}
             # Puerto interno de la app
             PORT=3000
+            # URL de conexión a la Base de Datos (Requerido por Prisma)
+            DATABASE_URL=postgresql://${{ secrets.PG_DB_USERNAME }}:${{ secrets.PG_DB_PASSWORD }}@postgres:5432/${{ secrets.PG_DB_NAME }}?schema=public
             EOF
 
             # 3. Crear archivo docker-compose.prod.yml
