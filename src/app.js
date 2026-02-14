@@ -20,8 +20,10 @@ app.use(helmet({
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "data:", "https:", "https://fastly.jsdelivr.net"],
+      upgradeInsecureRequests: null, // Disable automatic upgrade to HTTPS
     },
   },
+  strictTransportSecurity: false, // Disable HSTS (Strict-Transport-Security) for HTTP support
 }));
 
 // CORS
