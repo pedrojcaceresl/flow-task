@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlowTask</title>
+    <title>FlowTask API - The Next Gen Workflow</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -17,74 +17,166 @@
                             600: '#0284c7',
                             900: '#0c4a6e',
                         }
+                    },
+                    animation: {
+                        'blob': 'blob 7s infinite',
+                        'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
                     }
                 }
             }
         }
     </script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans antialiased">
-    <div class="min-h-screen flex flex-col items-center justify-center p-4">
-        <main class="max-w-4xl w-full text-center space-y-8">
-            <div class="space-y-4">
-                <h1 class="text-6xl font-bold tracking-tight text-brand-900">
-                    Flow<span class="text-brand-500">Task</span>
-                </h1>
-                <p class="text-xl text-slate-600 max-w-2xl mx-auto">
-                    Gestión de flujos de trabajo simplificada. API profesional lista para escalar.
-                </p>
-            </div>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased overflow-x-hidden">
+    <!-- Background Decor -->
+    <div class="fixed inset-0 -z-10 overflow-hidden">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-brand-200 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
+        <div class="absolute top-0 right-1/4 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
+        <div class="absolute -bottom-32 left-1/3 w-96 h-96 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-4000"></div>
+    </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-                <div class="p-6 bg-white rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-                    <div class="w-12 h-12 bg-brand-100 text-brand-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-                        </svg>
-                    </div>
-                    <h3 class="font-semibold text-lg mb-2">Rápido</h3>
-                    <p class="text-slate-500">Respuestas en milisegundos gracias a nuestra arquitectura optimizada.</p>
-                </div>
-                <div class="p-6 bg-white rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-                    <div class="w-12 h-12 bg-brand-100 text-brand-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" />
-                        </svg>
-                    </div>
-                    <h3 class="font-semibold text-lg mb-2">Seguro</h3>
-                    <p class="text-slate-500">Validación de datos robusta y prácticas de seguridad estándar.</p>
-                </div>
-                <div class="p-6 bg-white rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-                    <div class="w-12 h-12 bg-brand-100 text-brand-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                        </svg>
-                    </div>
-                    <h3 class="font-semibold text-lg mb-2">CI/CD Ready</h3>
-                    <p class="text-slate-500">Diseñado específicamente para practicar pipelines de despliegue continuo.</p>
-                </div>
+    <div class="min-h-screen flex flex-col">
+        <!-- Navbar -->
+        <nav class="w-full px-6 py-4 flex justify-between items-center max-w-7xl mx-auto w-full">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-gradient-to-br from-brand-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg">F</div>
+                <span class="font-bold text-xl tracking-tight text-slate-800">FlowTask</span>
             </div>
+            <a href="/docs" class="text-sm font-semibold text-slate-600 hover:text-brand-600 transition-colors">Documentación</a>
+        </nav>
 
-            <div class="mt-12 p-4 bg-slate-900 rounded-lg shadow-lg text-left max-w-2xl mx-auto overflow-hidden">
-                <div class="flex items-center gap-2 mb-4 border-b border-slate-700 pb-2">
-                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                    <span class="text-xs text-slate-400 ml-2">api-check.sh</span>
+        <main class="flex-grow flex flex-col items-center justify-center px-4 py-12 sm:py-24">
+            <div class="max-w-5xl w-full text-center space-y-12">
+                
+                <!-- Hero Section -->
+                <div class="space-y-6 animate-fade-in-up">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 border border-brand-100 text-brand-700 text-xs font-medium mb-4">
+                        <span class="flex h-2 w-2 relative">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-500"></span>
+                        </span>
+                        v1.0.0 Versión Estable
+                    </div>
+
+                    <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-slate-900 leading-tight">
+                        Orquesta tus <br/>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 via-purple-600 to-brand-600 animate-gradient-x">Flujos de Trabajo</span> con Código
+                    </h1>
+                    
+                    <p class="text-xl md:text-2xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+                        Una API potente, segura y orientada a desarrolladores para la gestión moderna de tareas.
+                        Creada para la velocidad, hecha para escalar.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center pt-8">
+                        <a href="/docs" class="group relative px-8 py-4 bg-slate-900 text-white font-semibold rounded-full shadow-xl hover:bg-slate-800 hover:scale-105 hover:shadow-2xl transition-all duration-200 flex items-center justify-center gap-2">
+                            Explorar Docs
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 group-hover:translate-x-1 transition-transform">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                            </svg>
+                        </a>
+                        <a href="#features" class="px-8 py-4 bg-white text-slate-700 font-semibold rounded-full border border-slate-200 shadow-sm hover:bg-slate-50 hover:border-slate-300 transition-all duration-200">
+                            Saber Más
+                        </a>
+                    </div>
                 </div>
-                <pre class="font-mono text-sm text-green-400">
-$ curl -X GET /api/v1/health
-{
-  "status": "ok",
-  "version": "1.0.0",
-  "uptime": "24h"
-}</pre>
+
+                <!-- Code Preview & Terminal -->
+                <div class="mt-16 relative mx-auto max-w-3xl animate-fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-brand-500 to-purple-600 rounded-2xl blur opacity-25"></div>
+                    <div class="relative bg-slate-900 rounded-xl shadow-2xl overflow-hidden text-left border border-slate-800">
+                        <div class="flex items-center gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/50">
+                            <div class="flex gap-2">
+                                <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+                            </div>
+                            <span class="text-xs text-slate-500 font-mono ml-2 flex-grow text-center">curl-client — bash — 80x24</span>
+                        </div>
+                        <div class="p-6 overflow-x-auto">
+<pre class="font-mono text-sm leading-relaxed">
+<span class="text-purple-400">$</span> <span class="text-yellow-300">curl</span> -X POST https://api.flowtask.com/v1/auth/login \
+  -H <span class="text-green-300">"Content-Type: application/json"</span> \
+  -d <span class="text-cyan-300">'{
+    "email": "demo@flowtask.com",
+    "password": "**************"
+  }'</span>
+
+<span class="text-slate-500"># Respuesta (200 OK)</span>
+<span class="text-slate-300">{
+  <span class="text-brand-400">"user"</span>: { <span class="text-brand-400">"id"</span>: <span class="text-yellow-300">1</span>, <span class="text-brand-400">"name"</span>: <span class="text-green-300">"Demo User"</span> },
+  <span class="text-brand-400">"tokens"</span>: {
+    <span class="text-brand-400">"access"</span>: { <span class="text-brand-400">"token"</span>: <span class="text-green-300">"eyJhbGciOiJIUz..."</span>, ... }
+  }
+}</span>
+</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Features Grid -->
+                <div id="features" class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-24 text-left">
+                    <div class="glass-card p-8 rounded-2xl border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-6 shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                            </svg>
+                        </div>
+                        <h3 class="font-bold text-xl mb-3 text-slate-900">Ultrarrápido</h3>
+                        <p class="text-slate-600 leading-relaxed">Construido con Node.js v22 y PostgreSQL optimizado. Tiempos de respuesta de un solo dígito.</p>
+                    </div>
+                    <div class="glass-card p-8 rounded-2xl border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                        <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center mb-6 shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" />
+                            </svg>
+                        </div>
+                        <h3 class="font-bold text-xl mb-3 text-slate-900">Seguridad Empresarial</h3>
+                        <p class="text-slate-600 leading-relaxed">Autenticación JWT, Control de Acceso (RBAC) y validación exhaustiva preconfigurada.</p>
+                    </div>
+                    <div class="glass-card p-8 rounded-2xl border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                        <div class="w-12 h-12 bg-pink-100 text-pink-600 rounded-xl flex items-center justify-center mb-6 shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" />
+                            </svg>
+                        </div>
+                        <h3 class="font-bold text-xl mb-3 text-slate-900">Listo para Developers</h3>
+                        <p class="text-slate-600 leading-relaxed">Documentación OpenAPI completa, UI de Swagger y manejo de errores predecible.</p>
+                    </div>
+                </div>
+
             </div>
-            
-            <footer class="mt-16 text-slate-400 text-sm">
-                &copy; 2026 FlowTask API. Version 1.0.0
-            </footer>
         </main>
+
+        <footer class="py-8 text-center text-slate-400 text-sm border-t border-slate-200/50 bg-white/50 backdrop-blur-sm">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center px-6">
+                <p>&copy; 2026 FlowTask API. Todos los derechos reservados.</p>
+                <div class="flex gap-4 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-brand-600 transition-colors">Twitter</a>
+                    <a href="#" class="hover:text-brand-600 transition-colors">GitHub</a>
+                    <a href="/docs" class="hover:text-brand-600 transition-colors">Docs API</a>
+                </div>
+            </div>
+        </footer>
     </div>
 </body>
 </html>

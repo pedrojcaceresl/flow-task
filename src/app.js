@@ -3,9 +3,11 @@ const path = require('path');
 const helmet = require('helmet');
 const cors = require('cors');
 const morgan = require('morgan');
+const { apiReference } = require('@scalar/express-api-reference');
 const httpStatus = require('http-status').status;
 const routes = require('./routes/v1');
 const AppError = require('./utils/AppError');
+const swaggerSpec = require('./docs/swagger');
 
 const app = express();
 
@@ -14,9 +16,10 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.tailwindcss.com"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", "data:", "https:"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.tailwindcss.com", "https://cdn.jsdelivr.net"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:", "https:", "https://fastly.jsdelivr.net"],
     },
   },
 }));
@@ -32,6 +35,17 @@ app.use(express.json());
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
+
+// API Documentation
+app.use(
+  '/docs',
+  apiReference({
+    theme: 'purple',
+    spec: {
+      content: swaggerSpec,
+    },
+  })
+);
 
 // API Routes
 app.use('/api/v1', routes);
