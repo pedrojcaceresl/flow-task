@@ -149,15 +149,21 @@ jobs:
             docker compose -f docker-compose.prod.yml up -d
 
             # 5. Esperar a que la base de datos esté lista
-            echo "Esperando inicio de servicios..."
-            sleep 10
+            # Damos un tiempo prudencial para que Postgres arranque y acepte conexiones
+            echo "Esperando inicio de servicios (30s)..."
+            sleep 30
 
             # 6. Ejecutar migraciones de base de datos
             # Actualiza el esquema de la BD si hubo cambios
             echo "Ejecutando migraciones..."
             docker exec flow-task-app npx prisma migrate deploy
 
-            # 7. Limpieza
+            # 7. Popular base de datos (Seeds)
+            # Inserta datos iniciales si no existen (usuarios de prueba, categorías)
+            echo "Ejecutando seeds..."
+            docker exec flow-task-app npx prisma db seed
+
+            # 8. Limpieza
             # Elimina imágenes antiguas para liberar espacio en disco
             echo "Limpiando imágenes antiguas..."
             docker image prune -f
